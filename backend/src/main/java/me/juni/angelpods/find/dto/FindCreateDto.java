@@ -17,8 +17,27 @@ public class FindCreateDto {
 	private String phone;
 	//private Array<Image> images;
 	
+	
+	
+	
 	public String getUserId() {
 		return userId;
+	}
+	public FindCreateDto() {
+	}
+	public FindCreateDto(String userId, String mCategory, String sCategory, String lat, String lng, String title,
+			String desc, String iName, LocalDateTime getTime, String getLoc, String phone) {
+		this.userId = userId;
+		this.mCategory = mCategory;
+		this.sCategory = sCategory;
+		this.lat = lat;
+		this.lng = lng;
+		this.title = title;
+		this.desc = desc;
+		this.iName = iName;
+		this.getTime = getTime;
+		this.getLoc = getLoc;
+		this.phone = phone;
 	}
 	public void setUserId(String userId) {
 		this.userId = userId;

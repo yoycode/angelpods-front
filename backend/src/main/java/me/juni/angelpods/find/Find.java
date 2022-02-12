@@ -25,6 +25,27 @@ public class Find {
 	private LocalDateTime createdAt;
 	private LocalDateTime lastUpdatedAt;
 	
+	public Find() {
+	}
+	
+	public Find(Long id, String mCategory, String sCategory, String lat, String lng, String title, String description,
+			String iName, LocalDateTime getTime, String getLoc, String phone, LocalDateTime createdAt,
+			LocalDateTime lastUpdatedAt) {
+		this.id = id;
+		this.mCategory = mCategory;
+		this.sCategory = sCategory;
+		this.lat = lat;
+		this.lng = lng;
+		this.title = title;
+		this.description = description;
+		this.iName = iName;
+		this.getTime = getTime;
+		this.getLoc = getLoc;
+		this.phone = phone;
+		this.createdAt = createdAt;
+		this.lastUpdatedAt = lastUpdatedAt;
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -103,26 +124,5 @@ public class Find {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Find(Long id, String mCategory, String sCategory, String lat, String lng, String title, String description,
-			String iName, LocalDateTime getTime, String getLoc, String phone, LocalDateTime createdAt,
-			LocalDateTime lastUpdatedAt) {
-		this.id = id;
-		this.mCategory = mCategory;
-		this.sCategory = sCategory;
-		this.lat = lat;
-		this.lng = lng;
-		this.title = title;
-		this.description = description;
-		this.iName = iName;
-		this.getTime = getTime;
-		this.getLoc = getLoc;
-		this.phone = phone;
-		this.createdAt = createdAt;
-		this.lastUpdatedAt = lastUpdatedAt;
-	}
-	public Find() {
-	}
-	
-	
 	
 }

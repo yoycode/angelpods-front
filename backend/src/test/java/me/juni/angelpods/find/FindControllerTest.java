@@ -2,6 +2,7 @@ package me.juni.angelpods.find;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
@@ -44,6 +45,10 @@ class FindControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(dto)))
 		.andDo(print())
-		.andExpect(status().isCreated());
+		.andExpect(status().isCreated())
+		.andExpect(jsonPath("id").exists())
+		.andExpect(jsonPath("lastUpdatedAt").exists())
+		.andExpect(jsonPath("createdAt").exists())
+		;
 	}
 }

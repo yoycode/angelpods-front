@@ -2,15 +2,24 @@ package me.juni.angelpods.find.dto;
 
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.NotBlank;
+
+
 public class FindCreateDto {
 
+	@NotBlank
 	private String userId;
+	@NotBlank
 	private String mCategory;
 	private String sCategory;
+	@NotBlank
 	private String lat;
+	@NotBlank
 	private String lng;
+	@NotBlank
 	private String title;
 	private String desc;
+	@NotBlank
 	private String iName;
 	private LocalDateTime getTime;
 	private String getLoc;

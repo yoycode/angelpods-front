@@ -51,4 +51,26 @@ class FindControllerTest {
 		.andExpect(jsonPath("createdAt").exists())
 		;
 	}
+	@DisplayName("습득물 등록 - 필수값 미입력 등록 실패")
+	@Test
+	void createFind_fail() throws Exception {
+		FindCreateDto dto = new FindCreateDto();
+		dto.setUserId(null);
+		dto.setmCategory(null);
+		dto.setsCategory("에어팟");
+		dto.setLat(null);
+		dto.setLng(null);
+		dto.setTitle("무학여고 앞에서 찾았습니다.");
+		dto.setDesc("에어팟 무학여고 앞에 버스정류장에 있었어요");
+		dto.setiName(null);
+		dto.setGetTime(LocalDateTime.of(2022, 02, 12, 12, 14));
+		dto.setGetLoc("서울시 성동구 응봉동 360-1");
+		dto.setPhone("010-1234-5678");
+		mockMvc.perform(post("/api/find")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(dto)))
+		.andDo(print())
+		.andExpect(status().isBadRequest())
+		;
+	}
 }

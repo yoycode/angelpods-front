@@ -1,9 +1,12 @@
 package me.juni.angelpods.find;
 import java.time.LocalDateTime;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +20,10 @@ public class FindController {
 	@Autowired private FindRepository findRepository;
 	
 	@PostMapping
-	public ResponseEntity<?> create(@RequestBody FindCreateDto dto){
+	public ResponseEntity<?> create(@Valid @RequestBody FindCreateDto dto, Errors errors){
+		if (errors.hasErrors()) {
+			return ResponseEntity.badRequest().body(null);
+		}
 		Find newFind = createFind(dto);
 		Find savedFind = findRepository.save(newFind);
 		

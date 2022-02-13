@@ -1,5 +1,6 @@
 package me.juni.angelpods.find;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -16,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 
 import me.juni.angelpods.find.dto.FindCreateDto;
 
@@ -41,14 +43,15 @@ class FindControllerTest {
 		dto.setGetTime(LocalDateTime.of(2022, 02, 12, 12, 14));
 		dto.setGetLoc("서울시 성동구 응봉동 360-1");
 		dto.setPhone("010-1234-5678");
+		
 		mockMvc.perform(post("/api/find")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(dto)))
 		.andDo(print())
 		.andExpect(status().isCreated())
 		.andExpect(jsonPath("id").exists())
-		.andExpect(jsonPath("lastUpdatedAt").exists())
-		.andExpect(jsonPath("createdAt").exists())
+		.andExpect(jsonPath("last_updated_at").exists())
+		.andExpect(jsonPath("created_at").exists())
 		;
 	}
 	@DisplayName("습득물 등록 - 필수값 미입력 등록 실패")
@@ -72,5 +75,14 @@ class FindControllerTest {
 		.andDo(print())
 		.andExpect(status().isBadRequest())
 		;
+	}
+	
+	@DisplayName("습득물 페이지 조회 - 정상조회")
+	@Test
+	void getPages() throws Exception {
+		mockMvc.perform(get("/api/find"))
+		.andDo(print())
+		.andExpect(status().isOk())
+		.andExpect(jsonPath("phone").doesNotExist());
 	}
 }

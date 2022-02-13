@@ -4,9 +4,12 @@ import java.time.LocalDateTime;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +31,12 @@ public class FindController {
 		Find savedFind = findRepository.save(newFind);
 		
 		return ResponseEntity.created(null).body(savedFind); 
+	}
+	
+	@GetMapping
+	public ResponseEntity<?> getFindPage(Pageable pageable){
+		Page<Find> finded = findRepository.findAll(pageable);
+		return ResponseEntity.ok(finded);
 	}
 
 	private Find createFind(FindCreateDto dto) {

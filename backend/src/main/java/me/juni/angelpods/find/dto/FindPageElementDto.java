@@ -5,45 +5,26 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;
 
 
-public class FindCreateDto {
+public class FindPageElementDto {
 
-	@NotBlank
+	private String boardId;
 	private String userId;
-	@NotBlank
 	private String mCategory;
 	private String sCategory;
-	@NotBlank
 	private String lat;
-	@NotBlank
 	private String lng;
-	@NotBlank
 	private String title;
 	private String desc;
-	@NotBlank
 	private String iName;
 	private LocalDateTime getTime;
 	private String getLoc;
-	private String phone;
 	//private Array<Image> images;
-	
-	public FindCreateDto() {
+	public String getBoardId() {
+		return boardId;
 	}
-	
-	public FindCreateDto(String userId, String mCategory, String sCategory, String lat, String lng, String title,
-			String desc, String iName, LocalDateTime getTime, String getLoc, String phone) {
-		this.userId = userId;
-		this.mCategory = mCategory;
-		this.sCategory = sCategory;
-		this.lat = lat;
-		this.lng = lng;
-		this.title = title;
-		this.desc = desc;
-		this.iName = iName;
-		this.getTime = getTime;
-		this.getLoc = getLoc;
-		this.phone = phone;
+	public void setBoardId(String boardId) {
+		this.boardId = boardId;
 	}
-	
 	public String getUserId() {
 		return userId;
 	}
@@ -104,13 +85,5 @@ public class FindCreateDto {
 	public void setGetLoc(String getLoc) {
 		this.getLoc = getLoc;
 	}
-	public String getPhone() {
-		return phone;
-	}
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-	
-	
 	
 }

@@ -2,8 +2,6 @@ package me.juni.angelpods.find.dto;
 
 import java.time.LocalDateTime;
 
-import javax.validation.constraints.NotBlank;
-
 
 public class FindPageElementDto {
 

@@ -24,7 +24,6 @@ public class FindCreateDto {
 	private LocalDateTime getTime;
 	private String getLoc;
 	private String phone;
-	//private Array<Image> images;
 	
 	public FindCreateDto() {
 	}

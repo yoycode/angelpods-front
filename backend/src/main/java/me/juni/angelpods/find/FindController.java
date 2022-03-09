@@ -43,13 +43,13 @@ public class FindController {
 
 	private Find createFind(FindCreateDto dto) {
 		Find find = new Find();
-		find.setMCategory(dto.getmCategory());
-		find.setSCategory(dto.getsCategory());
+		find.setmCategory(dto.getmCategory());
+		find.setsCategory(dto.getsCategory());
 		find.setLat(dto.getLat());
 		find.setLng(dto.getLng());
 		find.setTitle(dto.getTitle());
 		find.setDescription(dto.getDesc());
-		find.setIName(dto.getiName());
+		find.setiName(dto.getiName());
 		find.setGetTime(dto.getGetTime());
 		find.setGetLoc(dto.getGetLoc());
 		find.setPhone(dto.getPhone());

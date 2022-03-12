@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
 
+import me.juni.angelpods.find.Find;
+
 
 public class FindCreateDto {
 
@@ -19,11 +21,29 @@ public class FindCreateDto {
 	@NotBlank
 	private String title;
 	private String desc;
-	@NotBlank
 	private String iName;
 	private LocalDateTime getTime;
 	private String getLoc;
 	private String phone;
+	
+	
+	public Find createFind() {
+		Find find = new Find();
+		find.setmCategory(this.getmCategory());
+		find.setsCategory(this.getsCategory());
+		find.setLat(this.getLat());
+		find.setLng(this.getLng());
+		find.setTitle(this.getTitle());
+		find.setDescription(this.getDesc());
+		find.setiName(this.getiName());
+		find.setGetTime(this.getGetTime());
+		find.setGetLoc(this.getGetLoc());
+		find.setPhone(this.getPhone());
+		find.setCreatedAt(LocalDateTime.now());
+		find.setLastUpdatedAt(LocalDateTime.now());
+		return find;
+	}
+	
 	
 	public FindCreateDto() {
 	}
@@ -109,7 +129,4 @@ public class FindCreateDto {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	
-	
-	
 }

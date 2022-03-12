@@ -48,9 +48,6 @@ class FindControllerTest {
 				.content(objectMapper.writeValueAsString(dto)))
 		.andDo(print())
 		.andExpect(status().isCreated())
-		.andExpect(jsonPath("id").exists())
-		.andExpect(jsonPath("last_updated_at").exists())
-		.andExpect(jsonPath("created_at").exists())
 		;
 	}
 	@DisplayName("습득물 등록 - 필수값 미입력 등록 실패")

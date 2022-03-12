@@ -1,9 +1,6 @@
 
 .overMap {
   height: calc(100vh - 70px);
-  display:flex;
-  flex-direction:column;
-  justify-content: space-between;
 }
 .overMap * {
   z-index:10;
@@ -11,8 +8,9 @@
 
 }
 .searchWindow {
-  width:250px;
-  height:500px;
+  width:300px;
+  min-height:40px;
+  max-height:calc(100vh - 260px);
   background-color: rgba(255,255,255,0.7) !important;
   margin-right:auto;
 }

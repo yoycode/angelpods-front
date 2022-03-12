@@ -41,7 +41,6 @@ const ModalFind = (props: any) => { //TODO props type
   const [openMap, setOpenMap] = useState<boolean>(false);
   const [openNested, setOpenNested] = React.useState(false);
 
-
   const [userID, setUserID] = useState<string>('');
   const [mCategory, setMCategory] = useState<string>(''); //TODO key: value값으로 바꿔야할지 생각해보기
   const [sCategory, setSCategory] = useState<string>('');
@@ -55,7 +54,6 @@ const ModalFind = (props: any) => { //TODO props type
 
   const [mCateList, setMCateList] = useState<string[]>([]);
   const [sCateList, setSCateList] = useState<string[]>(['소분류 없음']);
-
   const formParam = {
     userID,
     mCategory,
@@ -68,6 +66,12 @@ const ModalFind = (props: any) => { //TODO props type
     images,
     phone
   }
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (props.layout === 1) {
+      setOpen(true);
+    }
+  }, [props.layout])
 
   useEffect(() => {
     const m = fakeCategory.map(x => x.mCategory)
@@ -121,11 +125,13 @@ const ModalFind = (props: any) => { //TODO props type
     }
   }
 
+
+
   return (
     <Modal
       aria-labelledby="transition-modal-title"
       aria-describedby="transition-modal-description"
-      open={props.open}
+      open={open}
       onClose={props.handleClose}
       closeAfterTransition
       BackdropComponent={Backdrop}
@@ -133,7 +139,7 @@ const ModalFind = (props: any) => { //TODO props type
         timeout: 500,
       }}
     >
-      <Fade in={props.open}>
+      <Fade in={open}>
         <Box sx={style}>
           <Typography id="transition-modal-title" variant="h6" component="h2" >
             발견했을까요 잃어버렸을까요
@@ -178,29 +184,10 @@ const ModalFind = (props: any) => { //TODO props type
             placeholder="textarea 못생겼다.." //TODO textarea 디자인 맞추기
             style={{ width: '100%', height: '150px' }}
           />
-          {/* <Button onClick={() => { setOpenNested(true) }}>습득장소</Button>
-          <Modal
-            hideBackdrop
-            open={openNested}
-            onClose={() => { setOpenNested(true) }}
-            aria-labelledby="child-modal-title"
-            aria-describedby="child-modal-description"
-          >
-            <Box sx={{ ...style, width: 200 }}>
-              <h2 id="child-modal-title">합치고싶은데</h2>
-              {
-                openMap
-                  ? <div id="modalMap" style={{ width: "100%", height: "300px" }}></div>
-                  : null
-              }
-              <Stack direction="row" justifyContent="center" spacing={1}>
-                <Button onClick={() => { setOpenNested(false) }}>닫기</Button>
-                <Button onClick={() => { setOpenNested(false) }} variant="contained" >선택</Button>
-              </Stack>
-            </Box>
-          </Modal> */}
+
           <Stack direction="row" justifyContent="space-between" spacing={1}>
-            <TextField onFocus={() => setOpenMap(true)} label="습득장소" variant="outlined" size="small" required />
+            {/* <TextField onFocus={() => setOpenMap(true)} label="습득장소" variant="outlined" size="small" required /> */}
+            <TextField onFocus={() => { props.setLayout(2) }} label="습득장소" variant="outlined" size="small" required />
             <LocalizationProvider dateAdapter={DateAdapter}>
               <MobileDateTimePicker
                 value={getTime}

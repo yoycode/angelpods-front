@@ -1,4 +1,6 @@
 package me.juni.angelpods.find;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import me.juni.angelpods.find.dto.FindCreateDto;
 
@@ -21,6 +26,18 @@ import me.juni.angelpods.find.dto.FindCreateDto;
 public class FindController {
 
 	@Autowired private FindRepository findRepository;
+	
+	@PostMapping("/upload")
+	public String saveImage(
+			@RequestPart("json") FindCreateDto dto,
+			@RequestParam("data") List<MultipartFile> files) {
+		System.out.println(dto);
+		for (MultipartFile file : files) {
+			System.out.println(file.getOriginalFilename());
+		}
+		return "success";
+	}
+	
 	
 	@PostMapping
 	public ResponseEntity<?> create(@Valid @RequestBody FindCreateDto dto, Errors errors){

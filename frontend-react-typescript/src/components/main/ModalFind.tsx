@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
@@ -37,10 +39,7 @@ const style = {
 
 
 
-const ModalFind = (props: any) => { //TODO props type
-  const [openMap, setOpenMap] = useState<boolean>(false);
-  const [openNested, setOpenNested] = React.useState(false);
-
+const ModalFind = (props: any) => { //TODO props type 확정되면 interface 넣기
   const [userID, setUserID] = useState<string>('yoy');
   const [mCategory, setMCategory] = useState<string>(''); //TODO key: value값으로 바꿔야할지 생각해보기
   const [sCategory, setSCategory] = useState<string>('');
@@ -55,7 +54,7 @@ const ModalFind = (props: any) => { //TODO props type
   const [phone, setPhone] = useState<string>('');
 
   const [mCateList, setMCateList] = useState<string[]>([]);
-  const [sCateList, setSCateList] = useState<string[]>(['소분류 없음']);
+  const [sCateList, setSCateList] = useState<string[]>([]);
   const formParam = {
     userID,
     mCategory,
@@ -72,9 +71,9 @@ const ModalFind = (props: any) => { //TODO props type
   }
   const [open, setOpen] = useState(false);
 
-  // 모달창 켜지면
+
   useEffect(() => {
-    if (props.layout === 1) {
+    if (props.layout === 1) {  // 모달창 켜지면
       setOpen(true);
       if (props.getLoc) {
         setLat(props.latLng.La);
@@ -84,13 +83,6 @@ const ModalFind = (props: any) => { //TODO props type
     }
   }, [props.layout])
 
-  // useEffect(() => {
-  //   console.log(props.getLoc)
-  //   // setLat(props.latLng.La);
-  //   // setLng(props.latLng.Ma);
-  //   // setGetLoc(props.getLoc)
-  // }, [props.latLng])
-
   useEffect(() => {
     const m = fakeCategory.map(x => x.mCategory)
     setMCateList(['대분류 선택', ...m])
@@ -99,11 +91,11 @@ const ModalFind = (props: any) => { //TODO props type
 
   useEffect(() => {
     if (mCategory) {
-      //TODO 여기 로직바꾸기!!!!!
-      const s = fakeCategory.filter(x => {
+      const matchedSList = fakeCategory.filter(x => {
         return x.mCategory === mCategory
       })
-      setSCateList(s[0].sCategory)
+      setSCateList(matchedSList[0].sCategory)
+      setSCategory(matchedSList[0].sCategory[0])
     }
   }, [mCategory])
 
@@ -114,33 +106,18 @@ const ModalFind = (props: any) => { //TODO props type
     setSCategory(event.target.value as string);
   };
 
-  useEffect(() => {
-    if (openMap) {
-      const container = document.getElementById('modalMap');
-      const options = {
-        center: new window.kakao.maps.LatLng(33.450701, 126.570667),
-        level: 3
-      };
-      const map = new window.kakao.maps.Map(container, options);
-      const overlay = `<div>This is overlay</div>`
-      var position = new window.kakao.maps.LatLng(33.450701, 126.570667);
-      // 커스텀 오버레이를 생성합니다
-      var customOverlay = new window.kakao.maps.CustomOverlay({
-        position: position,
-        content: overlay
-      });
-
-      // 커스텀 오버레이를 지도에 표시합니다
-      customOverlay.setMap(map);
-
-    }
-  }, [openMap])
-
   const postItem = async () => {
     console.log(formParam)
-    const validation = false;
+    const validation = true;
     if (validation) {
-      // axios
+      axios.post('localhost:8080/api/find')
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+
     }
     props.setLayout(0)
   }
@@ -207,10 +184,6 @@ const ModalFind = (props: any) => { //TODO props type
           />
 
           <Stack direction="row" justifyContent="flex-start" spacing={1}>
-            {/* <TextField onFocus={() => setOpenMap(true)} label="습득장소" variant="outlined" size="small" required /> */}
-            {/* <TextField onChange={e => props.setSearchString(e.target.value)} label="습득장소" variant="outlined" size="small" required />
-            <Button onClick={() => { props.setLayout(2) }} variant="contained">찾기</Button> */}
-
             <LocalizationProvider dateAdapter={DateAdapter}>
               <MobileDateTimePicker
                 value={getTime}
@@ -223,12 +196,6 @@ const ModalFind = (props: any) => { //TODO props type
             </LocalizationProvider>
             <TextField label="연락처" onChange={e => setPhone(e.target.value)} variant="outlined" size="small" />
           </Stack>
-          {
-            openMap
-              ? <div id="modalMap" style={{ width: "100%", height: "300px" }}></div>
-              : null
-          }
-
 
           mCategory: {formParam.mCategory}<br />
           sCategory: {formParam.sCategory}<br />

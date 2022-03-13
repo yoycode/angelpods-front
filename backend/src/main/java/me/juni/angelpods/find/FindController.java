@@ -51,8 +51,8 @@ public class FindController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<?> getFindPage(Pageable pageable){
-		Page<Find> finded = findRepository.findAll(pageable);
+	public ResponseEntity<?> getFindAll(){
+		List<Find> finded = findRepository.findAll();
 		return ResponseEntity.ok(finded);
 	}
 }

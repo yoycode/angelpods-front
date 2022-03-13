@@ -41,11 +41,13 @@ const ModalFind = (props: any) => { //TODO props type
   const [openMap, setOpenMap] = useState<boolean>(false);
   const [openNested, setOpenNested] = React.useState(false);
 
-  const [userID, setUserID] = useState<string>('');
+  const [userID, setUserID] = useState<string>('yoy');
   const [mCategory, setMCategory] = useState<string>(''); //TODO key: value값으로 바꿔야할지 생각해보기
   const [sCategory, setSCategory] = useState<string>('');
+  const [lat, setLat] = useState<Number>(0);
+  const [lng, setLng] = useState<Number>(0);
   const [title, setTitle] = useState<string>('');
-  const [desc, setDesc] = useState<string>('');
+  const [desc, setDesc] = useState<string | null>(null);
   const [iName, setIName] = useState<string>('');
   const [getTime, setGetTime] = useState(moment);  //TODO type 생각해보기
   const [getLoc, setGetLoc] = useState<string>('');
@@ -58,6 +60,8 @@ const ModalFind = (props: any) => { //TODO props type
     userID,
     mCategory,
     sCategory,
+    lat,
+    lng,
     title,
     desc,
     iName,
@@ -67,11 +71,25 @@ const ModalFind = (props: any) => { //TODO props type
     phone
   }
   const [open, setOpen] = useState(false);
+
+  // 모달창 켜지면
   useEffect(() => {
     if (props.layout === 1) {
       setOpen(true);
+      if (props.getLoc) {
+        setLat(props.latLng.La);
+        setLng(props.latLng.Ma);
+        setGetLoc(props.getLoc)
+      }
     }
   }, [props.layout])
+
+  // useEffect(() => {
+  //   console.log(props.getLoc)
+  //   // setLat(props.latLng.La);
+  //   // setLng(props.latLng.Ma);
+  //   // setGetLoc(props.getLoc)
+  // }, [props.latLng])
 
   useEffect(() => {
     const m = fakeCategory.map(x => x.mCategory)
@@ -119,10 +137,12 @@ const ModalFind = (props: any) => { //TODO props type
   }, [openMap])
 
   const postItem = async () => {
+    console.log(formParam)
     const validation = false;
     if (validation) {
       // axios
     }
+    props.setLayout(0)
   }
 
 
@@ -144,6 +164,7 @@ const ModalFind = (props: any) => { //TODO props type
           <Typography id="transition-modal-title" variant="h6" component="h2" >
             발견했을까요 잃어버렸을까요
           </Typography>
+          <TextField onFocus={() => { props.setLayout(2) }} value={getLoc} helperText={`( 위도: ${lat} , 경도: ${lng} )`} label="습득장소" variant="outlined" size="small" required />
           <Stack direction="row" justifyContent="" spacing={1}>
             <FormControl fullWidth>
               <InputLabel focused id="mCate">대분류</InputLabel>
@@ -185,9 +206,11 @@ const ModalFind = (props: any) => { //TODO props type
             style={{ width: '100%', height: '150px' }}
           />
 
-          <Stack direction="row" justifyContent="space-between" spacing={1}>
+          <Stack direction="row" justifyContent="flex-start" spacing={1}>
             {/* <TextField onFocus={() => setOpenMap(true)} label="습득장소" variant="outlined" size="small" required /> */}
-            <TextField onFocus={() => { props.setLayout(2) }} label="습득장소" variant="outlined" size="small" required />
+            {/* <TextField onChange={e => props.setSearchString(e.target.value)} label="습득장소" variant="outlined" size="small" required />
+            <Button onClick={() => { props.setLayout(2) }} variant="contained">찾기</Button> */}
+
             <LocalizationProvider dateAdapter={DateAdapter}>
               <MobileDateTimePicker
                 value={getTime}
@@ -198,14 +221,25 @@ const ModalFind = (props: any) => { //TODO props type
 
               />
             </LocalizationProvider>
+            <TextField label="연락처" onChange={e => setPhone(e.target.value)} variant="outlined" size="small" />
           </Stack>
           {
             openMap
               ? <div id="modalMap" style={{ width: "100%", height: "300px" }}></div>
               : null
           }
-          <TextField label="연락처" variant="outlined" size="small" />
-          form : mCategory{formParam.mCategory} sCategory{formParam.sCategory} iName{formParam.iName}, title{formParam.title}, desc{formParam.desc}
+
+
+          mCategory: {formParam.mCategory}<br />
+          sCategory: {formParam.sCategory}<br />
+          lat: {formParam.lat}<br />
+          lng: {formParam.lng}<br />
+          iName: {formParam.iName}<br />
+          title: {formParam.title}<br />
+          getLoc: {formParam.getLoc}<br />
+          desc: {formParam.desc}<br />
+          phone: {formParam.phone}
+
           <Stack direction="row" justifyContent="space-between">
             <Button onClick={props.handleClose}>취소</Button>
             <Button onClick={postItem} variant="contained">등록</Button>

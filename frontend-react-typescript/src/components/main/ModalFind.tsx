@@ -8,9 +8,14 @@ import Fade from '@mui/material/Fade';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { AttachEmailRounded } from '@mui/icons-material';
 
 import '../../css/test.css';
+import fakeCategory from '../../assets/fakeCategory';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -27,10 +32,63 @@ const style = {
   p: 4,
 };
 
+const postItem = () => {
+
+}
+
 
 const ModalFind = (props: any) => { //TODO : 타입 바꿔주기
 
+  const [userID, setUserID] = useState('');
+  const [mCategory, setMCategory] = useState('');
+  const [sCategory, setSCategory] = useState('');
+  const [title, setTitle] = useState('');
+  const [desc, setDesc] = useState('');
+  const [iName, setIName] = useState('');
+  const [getTime, setGetTime] = useState('');
+  const [getLoc, setGetLoc] = useState('');
+  const [images, setImages] = useState('');
+  const [phone, setPhone] = useState('');
   const [map, setMap] = useState(false);
+
+  const [mCateList, setMCateList] = useState<string[]>([]);
+  const [sCateList, setSCateList] = useState<string[]>([]);
+
+  const form = {
+    userID,
+    mCategory,
+    sCategory,
+    title,
+    desc,
+    iName,
+    getTime,
+    getLoc,
+    images,
+    phone
+  }
+
+  useEffect(() => {
+    const m = fakeCategory.map(x => x.mCategory)
+    setMCateList(m)
+  }, [fakeCategory])
+
+  useEffect(() => {
+    if (mCategory) {
+      //TODO 여기 로직바꾸기
+      const s = fakeCategory.filter(x => {
+        return x.mCategory === mCategory
+      })
+      setSCateList(s[0].sCategory)
+    }
+  }, [mCategory])
+
+  const changeMCate = (event: SelectChangeEvent) => {
+    setMCategory(event.target.value as string);
+  };
+  const changeSCate = (event: SelectChangeEvent) => {
+    setSCategory(event.target.value as string);
+  };
+
   const loadMap = () => {
     setMap(true)
     const container = document.getElementById('modalMap');
@@ -70,36 +128,57 @@ const ModalFind = (props: any) => { //TODO : 타입 바꿔주기
             발견했을까요 잃어버렸을까요
           </Typography>
           <Stack direction="row" justifyContent="space-between" spacing={1}>
-            <TextField id="outlined-basic" label="대분류*" variant="outlined" size="small" />
-            <TextField id="outlined-basic" label="소분류*" variant="outlined" size="small" />
-            <TextField id="outlined-basic" label="아이템명*" variant="outlined" size="small" />
+            <Select label="mCate" onChange={changeMCate} size="small" required >
+              {
+                mCateList.map((cate, idx) => (
+                  <MenuItem value={cate} key={idx}>{cate}</MenuItem>
+                ))
+              }
+            </Select>
+            <Select label="sCate" onChange={changeSCate} size="small" required >
+              {
+                sCateList.map((cate, idx) => (
+                  <MenuItem value={cate} key={idx}>{cate}</MenuItem>
+                ))
+              }
+            </Select>
+            {/* <TextField onChange={e => setMCategory(e.)(e.target.value)} name="user_id" label="대분류" variant="outlined" size="small" required /> */}
+            {/* <TextField onChange={e => setSCategory(e.target.value)} label="소분류" variant="outlined" size="small" /> */}
+            <TextField onChange={e => setIName(e.target.value)} label="아이템명" variant="outlined" size="small" required />
           </Stack>
+          <Stack direction="row" justifyContent="space-between" spacing={1}>
+            여기는 state : {mCategory} {sCategory} {iName}
+          </Stack>
+
           <Stack direction="row" justifyContent="flex-start" spacing={1} style={{ overflowX: 'scroll' }}>
-            <div style={{ minWidth: '85px', height: '85px', backgroundColor: 'lightgrey' }}>img</div>
+            <div style={{ minWidth: '85px', height: '85px', backgroundColor: 'lightgrey' }}></div>
             <div style={{ minWidth: '85px', height: '85px', backgroundColor: 'lightgrey' }}>img</div>
             <div style={{ minWidth: '85px', height: '85px', backgroundColor: 'lightgrey' }}>img</div>
             <div style={{ minWidth: '85px', height: '85px', backgroundColor: 'lightgrey' }}>img</div>
             <div style={{ minWidth: '85px', height: '85px', backgroundColor: 'lightgrey' }}>img</div>
           </Stack>
-          <TextField id="outlined-basic" label="제목*" variant="outlined" size="small" />
+          <TextField label="제목" variant="outlined" size="small" required />
           <TextareaAutosize
             aria-label="empty textarea"
             placeholder="흠..."
             style={{ width: '100%', height: '100px' }}
           />
           <Stack direction="row" justifyContent="space-between" spacing={1}>
-            <TextField id="outlined-basic" label="이걸 누르면!!*" variant="outlined" size="small" onClick={loadMap} />
-            <TextField id="outlined-basic" label="습득일시" variant="outlined" size="small" />
-            <TextField id="outlined-basic" label="연락처" variant="outlined" size="small" />
+            <TextField label="이걸 누르면!!*" variant="outlined" size="small" onClick={loadMap} />
+            <TextField label="습득일시" variant="outlined" size="small" />
+            <TextField label="연락처" variant="outlined" size="small" />
           </Stack>
           {
             map
               ? <div id="modalMap" style={{ width: "100%", height: "300px" }}></div>
               : null
           }
+          <Stack direction="row" justifyContent="space-between" spacing={1}>
+            form : mCategory{form.mCategory} sCategory{form.sCategory} iName{form.iName}
+          </Stack>
           <Stack direction="row" justifyContent="space-between">
             <Button onClick={props.handleClose}>취소</Button>
-            <Button>등록</Button>
+            <Button onClick={postItem}>등록</Button>
           </Stack>
         </Box>
       </Fade>

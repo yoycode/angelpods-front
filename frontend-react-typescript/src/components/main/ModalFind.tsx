@@ -110,7 +110,7 @@ const ModalFind = (props: any) => { //TODO props type 확정되면 interface 넣
     console.log(formParam)
     const validation = true;
     if (validation) {
-      axios.post('localhost:8080/api/find')
+      axios.get('localhost:5000/api/find/1')
         .then((res) => {
           console.log(res)
         })

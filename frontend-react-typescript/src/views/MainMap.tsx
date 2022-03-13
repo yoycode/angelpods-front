@@ -8,7 +8,6 @@ import Stack from '@mui/material/Stack';
 import Paper from '@mui/material/Paper';
 import FormControl from '@mui/material/FormControl';
 import InputBase from '@mui/material/InputBase';
-import TextField from '@mui/material/TextField';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -387,8 +386,8 @@ const MainMap = () => {
                         <ul id="placesList" ></ul>
                         <div id="pagination"></div>
                       </div> */}
-
-                      <IconButton aria-label="menu">
+                      <div>지도에서 습득 장소를 선택해주세요</div>
+                      {/* <IconButton aria-label="menu">
                         <MenuIcon sx={{ fontSize: "45px" }} />
                       </IconButton>
                       <InputBase
@@ -401,9 +400,9 @@ const MainMap = () => {
                       <Divider sx={{ height: 28, m: 1 }} orientation="vertical" />
                       <IconButton type="submit" aria-label="search">
                         <SearchIcon sx={{ fontSize: "45px" }} />
-                      </IconButton>
+                      </IconButton> */}
                     </Paper>
-                    <Paper elevation={5} className="searchWindow" id="placesList"></Paper>
+                    {/* <Paper elevation={5} className="searchWindow" id="placesList"></Paper> */}
                   </Stack>
                   <Stack direction="row" justifyContent="flex-end" spacing={1} sx={{ marginTop: 'auto' }}>
                     <Button onClick={() => { setLayout(0) }} variant="contained" size="large">돌아가기</Button>

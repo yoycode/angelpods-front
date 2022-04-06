@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
@@ -12,11 +14,14 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { AttachEmailRounded } from '@mui/icons-material';
+import DateAdapter from '@mui/lab/AdapterMoment';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import MobileDateTimePicker from '@mui/lab/MobileDateTimePicker';
 
 import '../../css/test.css';
 import fakeCategory from '../../assets/fakeCategory';
 
+const moment = require('moment');
 const style = {
   position: 'absolute' as 'absolute',
   top: '50%',
@@ -32,32 +37,30 @@ const style = {
   p: 4,
 };
 
-const postItem = () => {
-
-}
 
 
-const ModalFind = (props: any) => { //TODO : 타입 바꿔주기
-
-  const [userID, setUserID] = useState('');
-  const [mCategory, setMCategory] = useState('');
-  const [sCategory, setSCategory] = useState('');
-  const [title, setTitle] = useState('');
-  const [desc, setDesc] = useState('');
-  const [iName, setIName] = useState('');
-  const [getTime, setGetTime] = useState('');
-  const [getLoc, setGetLoc] = useState('');
-  const [images, setImages] = useState('');
-  const [phone, setPhone] = useState('');
-  const [map, setMap] = useState(false);
+const ModalFind = (props: any) => { //TODO props type 확정되면 interface 넣기
+  const [userID, setUserID] = useState<string>('yoy');
+  const [mCategory, setMCategory] = useState<string>(''); //TODO key: value값으로 바꿔야할지 생각해보기
+  const [sCategory, setSCategory] = useState<string>('');
+  const [lat, setLat] = useState<Number>(0);
+  const [lng, setLng] = useState<Number>(0);
+  const [title, setTitle] = useState<string>('');
+  const [desc, setDesc] = useState<string | null>(null);
+  const [iName, setIName] = useState<string>('');
+  const [getTime, setGetTime] = useState(moment);  //TODO type 생각해보기
+  const [getLoc, setGetLoc] = useState<string>('');
+  const [images, setImages] = useState(''); //TODO type 추가해주기
+  const [phone, setPhone] = useState<string>('');
 
   const [mCateList, setMCateList] = useState<string[]>([]);
   const [sCateList, setSCateList] = useState<string[]>([]);
-
-  const form = {
+  const formParam = {
     userID,
     mCategory,
     sCategory,
+    lat,
+    lng,
     title,
     desc,
     iName,
@@ -66,19 +69,33 @@ const ModalFind = (props: any) => { //TODO : 타입 바꿔주기
     images,
     phone
   }
+  const [open, setOpen] = useState(false);
+
+
+  useEffect(() => {
+    if (props.layout === 1) {  // 모달창 켜지면
+      setOpen(true);
+      if (props.getLoc) {
+        setLat(props.latLng.La);
+        setLng(props.latLng.Ma);
+        setGetLoc(props.getLoc)
+      }
+    }
+  }, [props.layout])
 
   useEffect(() => {
     const m = fakeCategory.map(x => x.mCategory)
-    setMCateList(m)
+    setMCateList(['대분류 선택', ...m])
+    setSCateList(['소분류 선택', ...sCateList])
   }, [fakeCategory])
 
   useEffect(() => {
     if (mCategory) {
-      //TODO 여기 로직바꾸기
-      const s = fakeCategory.filter(x => {
+      const matchedSList = fakeCategory.filter(x => {
         return x.mCategory === mCategory
       })
-      setSCateList(s[0].sCategory)
+      setSCateList(matchedSList[0].sCategory)
+      setSCategory(matchedSList[0].sCategory[0])
     }
   }, [mCategory])
 
@@ -89,32 +106,29 @@ const ModalFind = (props: any) => { //TODO : 타입 바꿔주기
     setSCategory(event.target.value as string);
   };
 
-  const loadMap = () => {
-    setMap(true)
-    const container = document.getElementById('modalMap');
-    const options = {
-      center: new window.kakao.maps.LatLng(33.450701, 126.570667),
-      level: 3
-    };
-    const map = new window.kakao.maps.Map(container, options);
-    const overlay = `<div>This is overlay</div>`
-    var position = new window.kakao.maps.LatLng(33.450701, 126.570667);
-    // 커스텀 오버레이를 생성합니다
-    var customOverlay = new window.kakao.maps.CustomOverlay({
-      position: position,
-      content: overlay
-    });
+  const postItem = async () => {
+    console.log(formParam)
+    const validation = true;
+    if (validation) {
+      axios.get('localhost:5000/api/find/1')
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((err) => {
+          console.error(err)
+        })
 
-    // 커스텀 오버레이를 지도에 표시합니다
-    customOverlay.setMap(map);
+    }
+    props.setLayout(0)
   }
+
 
 
   return (
     <Modal
       aria-labelledby="transition-modal-title"
       aria-describedby="transition-modal-description"
-      open={props.open}
+      open={open}
       onClose={props.handleClose}
       closeAfterTransition
       BackdropComponent={Backdrop}
@@ -122,68 +136,87 @@ const ModalFind = (props: any) => { //TODO : 타입 바꿔주기
         timeout: 500,
       }}
     >
-      <Fade in={props.open}>
+      <Fade in={open}>
         <Box sx={style}>
           <Typography id="transition-modal-title" variant="h6" component="h2" >
             발견했을까요 잃어버렸을까요
           </Typography>
-          <Stack direction="row" justifyContent="space-between" spacing={1}>
-            <Select label="mCate" onChange={changeMCate} size="small" required >
-              {
-                mCateList.map((cate, idx) => (
-                  <MenuItem value={cate} key={idx}>{cate}</MenuItem>
-                ))
-              }
-            </Select>
-            <Select label="sCate" onChange={changeSCate} size="small" required >
-              {
-                sCateList.map((cate, idx) => (
-                  <MenuItem value={cate} key={idx}>{cate}</MenuItem>
-                ))
-              }
-            </Select>
-            {/* <TextField onChange={e => setMCategory(e.)(e.target.value)} name="user_id" label="대분류" variant="outlined" size="small" required /> */}
-            {/* <TextField onChange={e => setSCategory(e.target.value)} label="소분류" variant="outlined" size="small" /> */}
-            <TextField onChange={e => setIName(e.target.value)} label="아이템명" variant="outlined" size="small" required />
+          <TextField onFocus={() => { props.setLayout(2) }} value={getLoc} helperText={`( 위도: ${lat} , 경도: ${lng} )`} label="습득장소" variant="outlined" size="small" required />
+          <Stack direction="row" justifyContent="" spacing={1}>
+            <FormControl fullWidth>
+              <InputLabel focused id="mCate">대분류</InputLabel>
+              <Select labelId="mCate" defaultValue={'대분류 선택'} onChange={changeMCate} size="small" required >
+                {
+                  mCateList.map((cate, idx) => (
+                    <MenuItem value={cate} key={idx}>{cate}</MenuItem>
+                  ))
+                }
+              </Select>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="sCate">소분류</InputLabel>
+              <Select labelId="sCate" defaultValue={'소분류 선택'} onChange={changeSCate} size="small" required >
+                {
+                  sCateList.map((cate, idx) => (
+                    <MenuItem value={cate} key={idx}>{cate}</MenuItem>
+                  ))
+                }
+              </Select>
+            </FormControl>
           </Stack>
-          <Stack direction="row" justifyContent="space-between" spacing={1}>
-            여기는 state : {mCategory} {sCategory} {iName}
-          </Stack>
+          <TextField onChange={e => setIName(e.target.value)} label="아이템명" variant="outlined" size="small" required />
 
           <Stack direction="row" justifyContent="flex-start" spacing={1} style={{ overflowX: 'scroll' }}>
-            <div style={{ minWidth: '85px', height: '85px', backgroundColor: 'lightgrey' }}></div>
-            <div style={{ minWidth: '85px', height: '85px', backgroundColor: 'lightgrey' }}>img</div>
-            <div style={{ minWidth: '85px', height: '85px', backgroundColor: 'lightgrey' }}>img</div>
-            <div style={{ minWidth: '85px', height: '85px', backgroundColor: 'lightgrey' }}>img</div>
-            <div style={{ minWidth: '85px', height: '85px', backgroundColor: 'lightgrey' }}>img</div>
+            {
+              [1, 2, 3, 4, 5].map((img, idx) => {
+                return <div key={idx} style={{ minWidth: '85px', height: '85px', backgroundColor: 'lightgrey' }}>test{img}</div>
+              })
+            }
+
           </Stack>
-          <TextField label="제목" variant="outlined" size="small" required />
+          <TextField onChange={e => setTitle(e.target.value)} label="제목" variant="outlined" size="small" required />
+
           <TextareaAutosize
+            onChange={e => setDesc(e.target.value)}
             aria-label="empty textarea"
-            placeholder="흠..."
-            style={{ width: '100%', height: '100px' }}
+            placeholder="textarea 못생겼다.." //TODO textarea 디자인 맞추기
+            style={{ width: '100%', height: '150px' }}
           />
-          <Stack direction="row" justifyContent="space-between" spacing={1}>
-            <TextField label="이걸 누르면!!*" variant="outlined" size="small" onClick={loadMap} />
-            <TextField label="습득일시" variant="outlined" size="small" />
-            <TextField label="연락처" variant="outlined" size="small" />
+
+          <Stack direction="row" justifyContent="flex-start" spacing={1}>
+            <LocalizationProvider dateAdapter={DateAdapter}>
+              <MobileDateTimePicker
+                value={getTime}
+                onChange={(newValue) => {
+                  setGetTime(newValue);
+                }}
+                renderInput={(params) => <TextField {...params} label="습득일시" variant="outlined" size="small" />}
+
+              />
+            </LocalizationProvider>
+            <TextField label="연락처" onChange={e => setPhone(e.target.value)} variant="outlined" size="small" />
           </Stack>
-          {
-            map
-              ? <div id="modalMap" style={{ width: "100%", height: "300px" }}></div>
-              : null
-          }
-          <Stack direction="row" justifyContent="space-between" spacing={1}>
-            form : mCategory{form.mCategory} sCategory{form.sCategory} iName{form.iName}
-          </Stack>
+
+          mCategory: {formParam.mCategory}<br />
+          sCategory: {formParam.sCategory}<br />
+          lat: {formParam.lat}<br />
+          lng: {formParam.lng}<br />
+          iName: {formParam.iName}<br />
+          title: {formParam.title}<br />
+          getLoc: {formParam.getLoc}<br />
+          desc: {formParam.desc}<br />
+          phone: {formParam.phone}
+
           <Stack direction="row" justifyContent="space-between">
             <Button onClick={props.handleClose}>취소</Button>
-            <Button onClick={postItem}>등록</Button>
+            <Button onClick={postItem} variant="contained">등록</Button>
           </Stack>
         </Box>
       </Fade>
     </Modal>
   );
 };
+
+
 
 export default ModalFind;

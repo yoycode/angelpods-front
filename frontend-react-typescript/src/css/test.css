@@ -1,9 +1,6 @@
 
 .overMap {
   height: calc(100vh - 70px);
-  display:flex;
-  flex-direction:column;
-  justify-content: space-between;
 }
 .overMap * {
   z-index:10;
@@ -12,8 +9,9 @@
 }
 .searchWindow {
   width:250px;
-  height:500px;
-  background-color: rgba(255,255,255,0.7) !important;
+  min-height:40px;
+  max-height:calc(100vh - 260px);
+  background-color: rgba(255,255,255,1) !important;
   margin-right:auto;
 }
 .posts{
@@ -25,4 +23,11 @@
   min-width:250px;
   width:250px;
   height:200px;
+}
+
+.bAddr{
+  padding:15px;
+}
+.bAddr div{
+  white-space: nowrap;
 }
